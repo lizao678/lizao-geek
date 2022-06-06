@@ -4,6 +4,8 @@
 
 .header {
   padding: 0;
+  display: flex;
+  justify-content: space-between;
 }
 
 .logo {
@@ -17,9 +19,7 @@
 }
 
 .user-info {
-  position: absolute;
-  right: 0;
-  top: 0;
+  display: flex;
   padding-right: 20px;
   color: #fff;
 
@@ -28,8 +28,7 @@
   }
 
   .user-logout {
-    display: inline-block;
+    // display: inline-block;
     cursor: pointer;
   }
 }
-

@@ -13,9 +13,9 @@ const http = axios.create({
 http.interceptors.request.use((config) => {
     const token = getToken()
     if (token) {
-        config.headers.Authorization = `Bearer${token}`
+        config.headers.Authorization = `Bearer ${token}`
     }
-    console.log(`当前请求为${config.url} ,data`, config.data);
+    console.log(`当前请求为${config.url} ,data`, config);
     // hide = message.loading('加载中...', 0)
     return config
 }, (error) => {
@@ -35,6 +35,10 @@ http.interceptors.response.use((response) => {
     // 超过 2xx 范围的状态码都会触发该函数
     // 对响应错误做点什么
     // hide()
+
+    if (error.response.status === 401) {
+        // 跳回登录页
+    }
     return Promise.reject(error)
 })
 

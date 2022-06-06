@@ -9,10 +9,11 @@ export default defineConfig({
     libList: [
       {
         libName: "antd",
-        style: (name) => `antd/lib/${name}/style/index.less`,
+        style: (name) => `antd/es/${name}/style`,
       },
     ],
   })
+
   ],
   css: {
     preprocessorOptions: {

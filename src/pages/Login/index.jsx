@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Spin, Card, Form, Input, Button, Checkbox, message } from 'antd';
+import { Spin, Card, Form, Input, Button, Checkbox, message, Popconfirm } from 'antd';
 import logo from '@/assets/logo.png'
 import './index.scss'
 import { useStore } from '@/store';
@@ -8,13 +8,12 @@ import { useNavigate } from 'react-router-dom';
 // 246810
 export default function Login() {
     const [loading, setLoading] = useState(false);
-    const rootStore = useStore()
     const navigate = useNavigate()
-    const { LoginStore } = rootStore
+    const { loginStore } = useStore()
     const onFinish = (values) => {
         setLoading(true)
         // value是一个对象，里面包含用户在表单输入的所有内容
-        LoginStore.SignIn({ mobile: values.username, code: values.password }).then((res) => {
+        loginStore.SignIn({ mobile: values.username, code: values.password }).then((res) => {
             // console.log('res', res);
             if (res.message !== 'OK') {
                 setLoading(false)
@@ -22,7 +21,7 @@ export default function Login() {
             }
             setLoading(false)
             message.success('登录成功！', 2)
-            navigate('/layout')
+            navigate('/')
         }).catch(e => {
             setLoading(false)
             message.error(`登录失败,测试密码为246810，${e}`, 2);
@@ -89,6 +88,15 @@ export default function Login() {
                         <Form.Item name='remember' valuePropName="checked">
                             <Checkbox className='login-checkbox-label'>
                                 我已阅读并同意「用户协议」和「隐私条款」
+                                <Popconfirm
+                                    title="Are you sure to delete this task?"
+                                    // onConfirm={confirm}
+                                    // onCancel={cancel}
+                                    okText="Yes"
+                                    cancelText="No"
+                                >
+                                    <a href="#">Delete</a>
+                                </Popconfirm>
                             </Checkbox>
                         </Form.Item>
 
