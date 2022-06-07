@@ -88,15 +88,6 @@ export default function Login() {
                         <Form.Item name='remember' valuePropName="checked">
                             <Checkbox className='login-checkbox-label'>
                                 我已阅读并同意「用户协议」和「隐私条款」
-                                <Popconfirm
-                                    title="Are you sure to delete this task?"
-                                    // onConfirm={confirm}
-                                    // onCancel={cancel}
-                                    okText="Yes"
-                                    cancelText="No"
-                                >
-                                    <a href="#">Delete</a>
-                                </Popconfirm>
                             </Checkbox>
                         </Form.Item>
 

@@ -14,41 +14,14 @@ const { RangePicker } = DatePicker
 
 const Article = () => {
   // 频道列表管理
-  const [channelList, setChannelList] = useState([])
-
+  const [channelList, setChannelList] = useState()
+  const loadChannelList = async () => {
+    const res = await http.get('/channels')
+    setChannelList(res.data.channels)
+  }
   useEffect(() => {
-    const loadChannelList = async () => {
-      const res = await http.get('/channels')
-      setChannelList(res.data.channels)
-    }
     loadChannelList()
   }, [])
-
-  // 文章列表管理
-  const [artList, setArtList] = useState({
-    list: [],// 文章列表
-    count: 0 // 文章数量
-  })
-  // 文章参数管理
-  const [params, setparams] = useState({
-    page: 1,
-    per_page: 10
-  })
-
-  // 如果异步请求函数需要依赖一些数据的变化而重新执行
-  // 推荐把它写到内部
-  useEffect(() => {
-    const loadList = async () => {
-      const res = await http.get('/mp/articles', { params })
-      const { results: list, total_count: count } = res.data
-      setArtList({
-        list,
-        count
-      })
-    }
-    loadList()
-  }, [params])
-
 
   const onFinish = (values) => {
     console.log(values);
@@ -150,11 +123,11 @@ const Article = () => {
           <Form.Item label="频道" name="channel_id">
             <Select
               placeholder="请选择文章频道"
+              defaultValue="lucy"
               style={{ width: 120 }}
             >
-              {/* <Option value="jack">Jack</Option> */}
-              {/* <Option value="lucy">Lucy</Option> */}
-              {channelList.map(item => <Option key={item.id} value={item.name}>{item.name}</Option>)}
+              <Option value="jack">Jack</Option>
+              <Option value="lucy">Lucy</Option>
             </Select>
           </Form.Item>
 
@@ -172,7 +145,7 @@ const Article = () => {
       </Card>
       {/* 文章展示区域 */}
       <Card title={`根据筛选条件共查询到 count 条结果：`}>
-        <Table rowKey="id" columns={columns} dataSource={artList.list} />
+        <Table rowKey="id" columns={columns} dataSource={data} />
       </Card>
     </div>
   )

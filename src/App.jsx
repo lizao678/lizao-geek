@@ -1,21 +1,24 @@
 import { useState } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { unstable_HistoryRouter as HistoryRouter, Routes } from 'react-router-dom'
 import './App.css'
 import router from '@/router'
+import { history } from '@/utils/history'
 
 
 function App() {
   // const [count, setCount] = useState(0)
   return (
     // 路由配置
-    <BrowserRouter>
+    <HistoryRouter history={history}>
+      {/* <BrowserRouter> */}
       <div className="App">
         {/* 创建路由 */}
         <Routes>
           {router}
         </Routes>
       </div>
-    </BrowserRouter>
+      {/* </BrowserRouter> */}
+    </HistoryRouter>
 
   )
 }
