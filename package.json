@@ -3,6 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
@@ -12,6 +14,7 @@
     "axios": "^0.27.2",
     "eslint": "^8.17.0",
     "eslint-config-react-app": "^7.0.1",
+    "gh-pages": "^4.0.0",
     "mobx": "^6.6.0",
     "mobx-react-lite": "^3.4.0",
     "react": "^18.0.0",
@@ -31,5 +34,6 @@
     "extends": [
       "react-app"
     ]
-  }
+  },
+  "homepage": "https://lizao678.github.io/lizao-geek/"
 }
