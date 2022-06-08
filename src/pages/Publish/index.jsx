@@ -16,8 +16,9 @@ import './index.scss'
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useStore } from '@/store';
-import { useEffect, useState } from 'react';
+import { useRef, useState } from 'react';
 import { observer } from 'mobx-react-lite';
+import { http } from '@/utils';
 
 const { Option } = Select
 
@@ -26,11 +27,44 @@ const Publish = () => {
     const { channelStore: { channelList } } = useStore()
     // 存放上传图片的列表
     const [fileList, setFileList] = useState([])
-    const onUploadChange = ({ result }) => {
+    // useRef在组件重新渲染的时候不会被清除，可以当做存储仓库
+    const cacheImgList = useRef([])
+    const onUploadChange = ({ fileList }) => {
         // 采取受控的写法，在最后一次log里response
         // 最终react state fileList中存放的数据有response.data.url
-        setFileList(result)
+        setFileList(fileList)
+        // 同时将图片列表存入仓库
+        cacheImgList.current = fileList
     }
+
+    // 图片上传限制
+    const [imgCount, setImageCount] = useState(1)
+    const radioChange = (e) => {
+        const { current } = cacheImgList
+        const { target: { value } } = e
+        setImageCount(value)
+        // 单图和三图切换时，存储图片
+        if (current.length === 0) { return }
+        if (value === 1) {
+            setFileList([current[0]])
+        } else if (value === 3) {
+            setFileList(current)
+        }
+    }
+
+    // 提交表单
+    const onFinish = async (values) => {
+        // 数据处理，重点是cover
+        const { type } = values
+        const cover = {
+            type,
+            images: fileList.map(item => item.response.data.url)
+        }
+        // values.cover = cover
+        // console.log({ ...values, cover });
+        await http.post('/mp/articles?draft=false', { ...values, cover })
+    }
+
     return (
         <div className="publish">
             <Card
@@ -47,6 +81,7 @@ const Publish = () => {
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 16 }}
                     initialValues={{ type: 1, content: '' }}
+                    onFinish={onFinish}
                 >
                     <Form.Item
                         label="标题"
@@ -68,13 +103,13 @@ const Publish = () => {
 
                     <Form.Item label="封面">
                         <Form.Item name="type">
-                            <Radio.Group>
+                            <Radio.Group onChange={radioChange}>
                                 <Radio value={1}>单图</Radio>
                                 <Radio value={3}>三图</Radio>
                                 <Radio value={0}>无图</Radio>
                             </Radio.Group>
                         </Form.Item>
-                        <Upload
+                        {imgCount > 0 && (<Upload
                             name="image"
                             listType="picture-card"
                             className="avatar-uploader"
@@ -82,11 +117,13 @@ const Publish = () => {
                             action="http://geek.itheima.net/v1_0/upload"
                             fileList={fileList}
                             onChange={onUploadChange}
+                            maxCount={imgCount}
+                            multiple={imgCount > 1}
                         >
-                            <div style={{ marginTop: 8 }}>
+                            {fileList.length !== imgCount && (<div style={{ marginTop: 8 }}>
                                 <PlusOutlined />
-                            </div>
-                        </Upload>
+                            </div>)}
+                        </Upload>)}
                     </Form.Item>
                     <Form.Item
                         label="内容"
