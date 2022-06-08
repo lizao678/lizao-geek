@@ -14,7 +14,7 @@ import { observer } from 'mobx-react-lite'
 const { Header, Sider } = Layout
 const GeekLayout = () => {
 
-    const { userStore, loginStore } = useStore()
+    const { userStore, loginStore, channelStore } = useStore()
     const { pathname } = useLocation()
     const items = [
         { label: <Link to='/'>数据概览</Link>, key: '/', icon: <HomeOutlined /> },
@@ -23,7 +23,8 @@ const GeekLayout = () => {
     ]
     useEffect(() => {
         userStore.getUseInfo()
-    }, [userStore])
+        channelStore.loadChannelList()
+    }, [userStore, channelStore])
 
     const navigate = new useNavigate()
     const confirm = () => {
