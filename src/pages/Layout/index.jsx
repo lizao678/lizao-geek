@@ -16,6 +16,7 @@ const GeekLayout = () => {
 
     const { userStore, loginStore, channelStore } = useStore()
     const { pathname } = useLocation()
+    console.log('pathname', pathname);
     const items = [
         { label: <Link to='/'>数据概览</Link>, key: '/', icon: <HomeOutlined /> },
         { label: <Link to='/article'>内容管理</Link>, key: '/article', icon: <DiffOutlined /> },
@@ -33,7 +34,7 @@ const GeekLayout = () => {
     };
 
     const cancel = (e) => {
-        console.log(e);
+        // console.log(e);
         // message.error('Click on No');
     };
     return (
@@ -62,6 +63,7 @@ const GeekLayout = () => {
                         mode="inline"
                         theme="dark"
                         defaultSelectedKeys={[pathname]}
+                        selectedKeys={[pathname]}
                         style={{ height: '100%', borderRight: 0 }}
                         items={items}
                     />

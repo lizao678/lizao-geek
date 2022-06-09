@@ -7,16 +7,17 @@ import {
     Input,
     Upload,
     Space,
-    Select
+    Select,
+    message
 } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import './index.scss'
 
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useStore } from '@/store';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { http } from '@/utils';
 
@@ -32,9 +33,18 @@ const Publish = () => {
     const onUploadChange = ({ fileList }) => {
         // 采取受控的写法，在最后一次log里response
         // 最终react state fileList中存放的数据有response.data.url
-        setFileList(fileList)
+        // 这里需要格式化一下（我觉得需要格式化都是后端有毛病）
+        const formatList = fileList.map(file => {
+            if (file.response) {
+                return {
+                    url: file.response.data.url
+                }
+            }
+            return file
+        })
+        setFileList(formatList)
         // 同时将图片列表存入仓库
-        cacheImgList.current = fileList
+        cacheImgList.current = formatList
     }
 
     // 图片上传限制
@@ -51,19 +61,50 @@ const Publish = () => {
             setFileList(current)
         }
     }
+    const navigate = useNavigate()
 
+    const [params] = useSearchParams()
+    const articleId = params.get('id')
     // 提交表单
     const onFinish = async (values) => {
         // 数据处理，重点是cover
         const { type } = values
         const cover = {
             type,
-            images: fileList.map(item => item.response.data.url)
+            images: fileList.map(item => item.url)
         }
-        // values.cover = cover
-        // console.log({ ...values, cover });
-        await http.post('/mp/articles?draft=false', { ...values, cover })
+        const data = { ...values, cover }
+        if (articleId) {
+            await http.put(`/mp/articles/${articleId}?draft=false`, data)
+        } else {
+            await http.post('/mp/articles?draft=false', data)
+        }
+
+        // 跳转列表 提示用户
+        navigate('/article')
+        message.success(`${articleId ? '更新' : '发布'}成功!`)
     }
+
+    // 编辑功能，获取传过来的文章id
+    // console.log('route', articleId);
+    // 数据回填 id调用接口 1.表单回填 2.暂存列表 3.Upload组件fileList
+    const formRef = useRef(null)
+    useEffect(() => {
+        const loadDetail = async () => {
+            const res = await http.get(`/mp/articles/${articleId}`)
+            const { data, data: { cover } } = res
+            formRef.current.setFieldsValue({ ...data, type: cover.type })
+            // 调用setFileList方法回显图片
+            const imgUrls = cover.images.map(url => ({ url }))
+            setFileList(imgUrls)
+            // 暂存列表也存一份
+            cacheImgList.current = imgUrls
+        }
+        // 必须编辑状态才可以调用回显接口
+        if (articleId) {
+            loadDetail()
+        }
+    }, [articleId])
 
     return (
         <div className="publish">
@@ -73,7 +114,7 @@ const Publish = () => {
                         <Breadcrumb.Item>
                             <Link to="/home">首页</Link>
                         </Breadcrumb.Item>
-                        <Breadcrumb.Item>发布文章</Breadcrumb.Item>
+                        <Breadcrumb.Item>{articleId ? '编辑' : '发布'}文章</Breadcrumb.Item>
                     </Breadcrumb>
                 }
             >
@@ -82,6 +123,7 @@ const Publish = () => {
                     wrapperCol={{ span: 16 }}
                     initialValues={{ type: 1, content: '' }}
                     onFinish={onFinish}
+                    ref={formRef}
                 >
                     <Form.Item
                         label="标题"
@@ -136,7 +178,7 @@ const Publish = () => {
                     <Form.Item wrapperCol={{ offset: 4 }}>
                         <Space>
                             <Button size="large" type="primary" htmlType="submit">
-                                发布文章
+                                {articleId ? '更新' : '发布'}文章
                             </Button>
                         </Space>
                     </Form.Item>

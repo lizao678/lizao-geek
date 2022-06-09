@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Card, Breadcrumb, Form, Button, Radio, DatePicker, Select, Table, Tag, Space, notification } from 'antd'
 import 'moment/locale/zh-cn'
 import locale from 'antd/es/date-picker/locale/zh_CN'
@@ -36,7 +36,8 @@ const Article = () => {
   // 文章参数管理
   const [params, setParams] = useState({
     page: 1,
-    per_page: 10
+    per_page: 10,
+    update: true
   })
 
   // 如果异步请求函数需要依赖一些数据的变化而重新执行
@@ -79,8 +80,13 @@ const Article = () => {
     // 修改params数据，触发接口调用
     setParams({ ...params, ...newParams })
     // setParams(params => { return Object.assign(params, newParams) })
-
   }
+
+  const navigate = useNavigate()
+  const goPublish = (data) => {
+    navigate(`/publish?id=${data.id}`)
+  }
+
   const columns = [
     {
       title: '封面',
@@ -121,18 +127,32 @@ const Article = () => {
       render: data => {
         return (
           <Space size="middle">
-            <Button type="primary" shape="circle" icon={<EditOutlined />} />
+            <Button
+              type="primary"
+              shape="circle"
+              icon={<EditOutlined />}
+              onClick={() => goPublish(data)}
+            />
             <Button
               type="primary"
               danger
               shape="circle"
               icon={<DeleteOutlined />}
+              onClick={() => delArticle(data)}
             />
           </Space>
         )
       }
     }
   ]
+  const delArticle = async (data) => {
+    // console.log('data', data);
+    await http.delete(`/mp/articles/${data.id}`)
+    setParams(params => ({
+      ...params,
+      update: !params.update
+    }))
+  }
   /* const data = [
     {
       id: '8218',
@@ -147,6 +167,13 @@ const Article = () => {
       title: 'wkwebview离线化加载h5资源解决方案'
     }
   ] */
+
+  const pageChange = (page) => {
+    setParams({
+      ...params,
+      page
+    })
+  }
   return (
     <div>
       {/* 筛选区域 */}
@@ -203,7 +230,16 @@ const Article = () => {
       </Card>
       {/* 文章展示区域 */}
       <Card title={`根据筛选条件共查询到 ${artList.count} 条结果：`}>
-        <Table rowKey="id" columns={columns} dataSource={artList.list} />
+        <Table
+          rowKey="id"
+          columns={columns}
+          dataSource={artList.list}
+          pagination={{
+            pageSize: params.per_page,
+            total: artList.count,
+            onChange: pageChange
+          }}
+        />
       </Card>
     </div>
   )
