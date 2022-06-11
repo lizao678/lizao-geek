@@ -1,5 +1,7 @@
 import AuthRoute from "@/conponents/AuthRoute";
 import Article from "@/pages/Article";
+import ArticleContent from "@/pages/Article/components/ArticleContent";
+import Compile from "@/pages/Article/components/Compile";
 import Home from "@/pages/Home";
 import Layout from "@/pages/Layout";
 import Login from "@/pages/Login";
@@ -27,15 +29,25 @@ const routes = [
             },
             {
                 path: 'article',
-                element: <Article />
+                element: <Article />,
+                children: [
+                    {
+                        name: 'content',
+                        index: true,
+                        element: <ArticleContent />
+                    },
+                    {
+                        path: 'compile',
+                        element: <Compile />
+                    },
+                ]
             },
             {
                 path: 'publish',
                 element: <Publish />
             },
         ]
-    },
-
+    }
 ]
 
 // 递归出路由结构

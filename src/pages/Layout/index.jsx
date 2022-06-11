@@ -6,22 +6,75 @@ import {
     LogoutOutlined
 } from '@ant-design/icons'
 import './index.scss'
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Link, Outlet, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useStore } from '@/store'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite'
+import { CloseOutlined } from '@ant-design/icons';
+
 
 const { Header, Sider } = Layout
 const GeekLayout = () => {
 
-    const { userStore, loginStore, channelStore } = useStore()
+    const { userStore, loginStore, channelStore, compileStore } = useStore()
     const { pathname } = useLocation()
-    console.log('pathname', pathname);
+    // console.log('pathname', pathname);
+    // const [compileShow, setCompile] = useState(false)
+    const [params] = useSearchParams()
+    // console.log('params', params.get('id'));
+    function getItem(label, key, icon, children, type) {
+        return {
+            key,
+            icon,
+            children,
+            label,
+            type,
+        };
+    }
+
+    // const history = createBrowserHistory()
+    function getCompile() {
+        // console.log('compileStore.getCompileId()', compileStore.getCompileId());
+        if (params.get('id') || compileStore.getCompileId()) {
+            return getItem(
+                <Link to='/article/compile' className='compile'>编辑文章
+                    <CloseOutlined className='closeIcon' onClick={(e) => {
+                        e.stopPropagation()
+                        // console.log('111');
+                        navigate('/article', { replace: true })
+                        compileStore.setCompileId('')
+                        // navigate('/article')
+                    }} />
+                </Link>,
+                '/article/compile'
+            )
+        }
+        return null
+    }
     const items = [
-        { label: <Link to='/'>数据概览</Link>, key: '/', icon: <HomeOutlined /> },
-        { label: <Link to='/article'>内容管理</Link>, key: '/article', icon: <DiffOutlined /> },
-        { label: <Link to='/publish'>发布文章</Link>, key: '/publish', icon: <EditOutlined /> }
+        getItem(<Link to='/'>数据概览</Link>, '/', <HomeOutlined />),
+        getItem('文章管理', '/art', <DiffOutlined />, [
+            getItem(<Link to='/article'>内容管理</Link>, '/article'),
+            getCompile()
+        ]),
+        getItem(<Link to='/publish?pubFlag=true'>发布文章</Link>, '/publish', <EditOutlined />)
     ]
+    /*  const items = [
+         { label: <Link to='/'>数据概览</Link>, key: '/', icon: <HomeOutlined /> },
+         {
+             label: <Link to='/article'>内容管理</Link>,
+             key: '/article',
+             icon: <DiffOutlined />,
+             children: [
+                 {
+                     label: '子菜单项',
+                     key: '/article/compile',
+                     theme: 'dark'
+                 }
+             ]
+         },
+         { label: <Link to='/publish'>发布文章</Link>, key: '/publish', icon: <EditOutlined /> }
+     ] */
     useEffect(() => {
         userStore.getUseInfo()
         channelStore.loadChannelList()
@@ -64,6 +117,7 @@ const GeekLayout = () => {
                         theme="dark"
                         defaultSelectedKeys={[pathname]}
                         selectedKeys={[pathname]}
+                        defaultOpenKeys={['/art']}
                         style={{ height: '100%', borderRight: 0 }}
                         items={items}
                     />

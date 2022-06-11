@@ -28,7 +28,7 @@ export default function Bar({ title, xData, yData, style }) {
             yAxis: {},
             series: [
                 {
-                    name: '销量',
+                    name: '文章数',
                     type: 'bar',
                     data: yData
                 }
@@ -41,9 +41,9 @@ export default function Bar({ title, xData, yData, style }) {
     }, [])
 
     return (
-        <div>
+        <>
             {/* 准备一个挂载节点 */}
             <div ref={domRef} style={style}></div>
-        </div>
+        </>
     )
 }

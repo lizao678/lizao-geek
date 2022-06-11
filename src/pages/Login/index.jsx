@@ -30,7 +30,7 @@ export default function Login() {
     };
 
     const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
+        // console.log('Failed:', errorInfo);
     };
     return (
         <div className="login">

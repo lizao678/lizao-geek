@@ -4,11 +4,13 @@ import React from "react";
 import LoginStore from "./login.Store";
 import UserStore from "./user.Store";
 import ChannelStore from "./channel.Store";
+import CompileStore from "./compile.Store";
 class RootStore {
     constructor() {
         this.loginStore = new LoginStore()
         this.userStore = new UserStore()
         this.channelStore = new ChannelStore()
+        this.compileStore = new CompileStore()
         // ...
     }
 }
