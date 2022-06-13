@@ -1,6 +1,6 @@
 // 封装axios
 // 实例化 请求拦截器 响应拦截器
-import { message } from "antd";
+// import { message } from "antd";
 import axios from "axios";
 import { getToken } from "./token";
 import { history } from "./history";
@@ -16,7 +16,7 @@ http.interceptors.request.use((config) => {
     if (token) {
         config.headers.Authorization = `Bearer ${token}`
     }
-    console.log(`当前请求为${config.url} ,data`, config);
+    // console.log(`当前请求为${config.url} ,data`, config);
     // hide = message.loading('加载中...', 0)
     return config
 }, (error) => {
@@ -29,7 +29,7 @@ http.interceptors.response.use((response) => {
     // 对响应数据做点什么
 
     response.data.headers = response.headers
-    console.log(`这是响应data${response.config.url}`, response.data, `response`, response);
+    // console.log(`这是响应data${response.config.url}`, response.data, `response`, response);
     // hide()
     return response.data
 }, (error) => {
