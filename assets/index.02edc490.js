@@ -1,2 +1,0 @@
-import{O as t}from"./index.0e1cbfe8.js";import{j as r,v as i}from"./index.98cb3c06.js";import"./TextArea.a9bf81b4.js";import"./index.c21424e9.js";import"./DeleteOutlined.db8be031.js";import"./index.e279deb6.js";import"./LeftOutlined.c44fe9ca.js";import"./index.dc1e14a4.js";import"./index.e43e7021.js";import"./index.997cf556.js";import"react-dom";function d(){return r(i,{children:r(t,{})})}export{d as default};
-//# sourceMappingURL=index.02edc490.js.map
