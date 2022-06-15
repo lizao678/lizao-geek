@@ -1,0 +1,2 @@
+import{O as t}from"./index.e921fb59.js";import{j as r,v as i}from"./index.016406f7.js";import"./TextArea.573fdcac.js";import"./index.32000531.js";import"./DeleteOutlined.9e39352c.js";import"./index.1e2dfa52.js";import"./LeftOutlined.42719e1e.js";import"./index.d7f36097.js";import"./index.fc767c43.js";import"./index.82e2780d.js";function c(){return r(i,{children:r(t,{})})}export{c as default};
+//# sourceMappingURL=index.cbf8fbb3.js.map
