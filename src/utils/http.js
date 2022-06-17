@@ -16,7 +16,7 @@ http.interceptors.request.use((config) => {
     if (token) {
         config.headers.Authorization = `Bearer ${token}`
     }
-    // console.log(`当前请求为${config.url} ,data`, config);
+    // console.log(`当前请求为${config.url} ,data`, config)
     // hide = message.loading('加载中...', 0)
     return config
 }, (error) => {

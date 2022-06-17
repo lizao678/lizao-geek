@@ -1,12 +1,15 @@
 import AuthRoute from "@/conponents/AuthRoute";
-import Article from "@/pages/Article";
-import ArticleContent from "@/pages/Article/components/ArticleContent";
-import Compile from "@/pages/Article/components/Compile";
-import Home from "@/pages/Home";
-import Layout from "@/pages/Layout";
-import Login from "@/pages/Login";
-import Publish from "@/pages/Publish";
+
 import { Navigate, Route } from "react-router-dom";
+// 路由懒加载
+import { lazy } from "react";
+const Login = lazy(() => import('@/pages/Login'))
+const Article = lazy(() => import('@/pages/Article'))
+const ArticleContent = lazy(() => import('@/pages/Article/components/ArticleContent'))
+const Compile = lazy(() => import('@/pages/Article/components/Compile'))
+const Home = lazy(() => import('@/pages/Home'))
+const Layout = lazy(() => import('@/pages/Layout'))
+const Publish = lazy(() => import('@/pages/Publish'))
 
 const routes = [
     /* {

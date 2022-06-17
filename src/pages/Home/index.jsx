@@ -1,4 +1,4 @@
-import React from 'react'
+// import React from 'react'
 import './index.scss'
 import Bar from '@/conponents/Bar';
 import { Card, Col, Row } from 'antd';

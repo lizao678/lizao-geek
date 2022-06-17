@@ -39,9 +39,9 @@ const GeekLayout = () => {
             return getItem(
                 <Link to='/article/compile' className='compile'>编辑文章
                     <CloseOutlined className='closeIcon' onClick={(e) => {
-                        e.stopPropagation()
-                        // console.log('111');
-                        navigate('/article', { replace: true })
+                        // e.stopPropagation() // 这行代码会刷新页面
+                        // navigate('/article', { replace: true })
+                        window.history.back()
                         compileStore.setCompileId('')
                         // navigate('/article')
                     }} />
